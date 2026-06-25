@@ -80,12 +80,25 @@ docker run -d --restart always \
 | `DERP_STUN` | `true` | Enable STUN server |
 | `DERP_STUN_PORT` | `3478` | STUN server port |
 | `DERP_VERIFY_CLIENTS` | `false` | Verify client connections |
+| `DERP_VERIFY_CLIENT_URL` |   | Define endpoint for client verification |
+| `DERP_VERIFY_CLIENT_URL_FAILOPEN` | `true` | Define if clients should be admitted if the verification endpoint can't be reached |
 | `TZ` | `UTC` | Timezone |
 
 ### Certificate Modes
 
 - **`manual`**: Provide your own certificates (mount to `/app/certs/{domain}.crt` and `/app/certs/{domain}.key`)
 - **`letsencrypt`**: Automatic certificate management via Let's Encrypt
+
+### DERP client verification
+
+- **`DERP_VERIFY_CLIENTS`** controls wether clients should be verified against a tailscale
+  instance running locally (see [here](https://github.com/tailscale/tailscale/blob/main/cmd/derper/README.md#guide-to-running-cmdderper))
+- **`DERP_VERIFY_CLIENT_URL`** controls wether clients should be validated against an admission endpoint.
+  This is mostly useful in self-hosted scenarios where you don't use the Tailscale control plane.
+  - Setting the URL enables HTTP(S) based validation, setting `DERP_VERIFY_CLIENTS` is not required
+  - The admission endpoint provided by e.g. headscale lives in `/verify` of your control plane, so e.g. `https://headscale.example.com/verify` 
+- **`DERP_VERIFY_CLIENT_URL_FAILOPEN`** controls wether clients should be admitted if the
+  endpoint is unreachable, i.e. if verification should 'fail open'.
 
 ## Integration
 
